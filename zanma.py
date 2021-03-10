@@ -36,34 +36,6 @@ async def play(ctx):
 
 		await ctx.send("no estas en un chat de voz")
 
-#------------------------------------Respuestas automatica--------------------------------------
-
-@bot.command()
-
-async def candee(ctx, contador):
-
-	contador=0
-
-	if contador == 0:
-
-		await ctx.send("Un día me pregunté si hay alguna riqueza en el mundo por la cual renunciaría a mi amor, pero en realidad, ¿hay alguna riqueza comparable a tu sonrisa? ¿De qué me servirían todas las cosas materiales que podría desear si no puedo disfrutarlas a tu lado?")
-
-		contador+=1
-
-	elif contador == 1:
-
-		await ctx.send("Lo único que sé es que te quiero más que a nada en el mundo, el resto lo ignoro totalmente.")
-
-		contador+=1
-
-	elif contador == 2:
-
-		await ctx.send("Tengo la ligera impresión de que en la larga marea del tiempo nadie podrá ocupar tu lugar.")
-
-	else:
-
-		contador=0
-
 #--------------------------------------------preguntas------------------------------------------------------------------
 
 @bot.command()
@@ -107,19 +79,6 @@ async def informacion(ctx):
 	embed.set_thumbnail(url="https://logos-marcas.com/wp-content/uploads/2020/04/Movistar-Logo.png")
 
 	await ctx.send(embed=embed)
-
-
-#------------------------------prefijo--------------------------------------------
-
-@bot.command(name="prefijo")
-
-async def prefijo(ctx,prefi):
-
-	bot = commands.Bot(command_prefix=prefi)
-
-	responder = ("tu prefijo a sido cambiado exitosamente",prefi)
-
-	await ctx.send(responder)
 
 #--------------------------------creador del bot-----------------------------------
 @bot.command(name="creador")
