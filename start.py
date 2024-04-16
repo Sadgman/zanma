@@ -1,4 +1,4 @@
-from colorama import Fore,init, Back, Style
+from colorama import Fore,init, Style
 
 print (Fore.GREEN + "\n||||||||||||||||||||||||||||||||ဪ zanma ဪ ဪ ဪ ဪ ဪ zanma ဪ ဪ ဪ zanma ဪ ဪ ဪ zanma ဪ ဪ ဪ ဪ ဪ ဪ ဪ ဪ||||||||||||||||||||||||||||||||")
 print (Fore.BLACK + "||||||||||||||||||||||||||||||||ဪ ဪ ဪ ဪ ဪ zanma ဪ ဪ ဪ zanma ဪ ဪ ဪ ဪ ဪ ဪ ဪ ဪ zanma ဪ zanma ဪ ဪ ဪ||||||||||||||||||||||||||||||||")
@@ -8,7 +8,7 @@ print (Fore.WHITE + "||||||||||||||||||||||||||||||||ဪ zanma ဪ ဪ zanma ဪ
 print (Fore.MAGENTA + "||||||||||||||||||||||||||||||||ဪ ဪ ဪ ဪ ဪ ဪ zanma ဪ ဪ zanma ဪ ဪ zanma ဪ ဪ ဪ zanma ဪ ဪ ဪ ဪ ဪ ဪ ဪ||||||||||||||||||||||||||||||||")
 print (Fore.BLUE + "||||||||||||||||||||||||||||||||ဪ ဪ zanma ဪ ဪ ဪ ဪ zanma ဪ ဪ ဪ ဪ zanma ဪ ဪ zanma ဪ ဪ ဪ ဪ ဪ ဪ ဪ ဪ||||||||||||||||||||||||||||||||")
 print (Fore.RED + "||||||||||||||||||||||||||||||||ဪ ဪ ဪ ဪ ဪ zanma ဪ ဪ ဪ ဪ zanma ဪ ဪ zanma ဪ ဪ ဪ ဪ zanma ဪ ဪ ဪ ဪ ဪ||||||||||||||||||||||||||||||||")
-print (Style.BRIGHT + Fore.RED +"|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||Zanma|por|Angel|Luis24 ||||||||||||||||||||||||||||||||||||||||||||||\n")
+print (Style.BRIGHT + Fore.RED +"|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||Zanma|por|MR |Red ||||||||||||||||||||||||||||||||||||||||||||||\n")
 print (Style.BRIGHT + "\nzanmaဪ||||||||||||||||||||||||||||||||!!!!iniciado!!!!||||||||||||||||||||||||||||||||")
 
 init(autoreset=True)

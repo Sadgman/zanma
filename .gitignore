@@ -1,0 +1,4 @@
+.env
+__pycache__/modulos.cpython-312.pyc
+__pycache__/zanma.cpython-312.pyc
+zanma.db

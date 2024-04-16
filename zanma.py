@@ -1,92 +1,87 @@
+import asyncio
 from modulos import *
-#------------------------TOKENS-------------------------
+
+base = sqlite3.connect('zanma.db')
+cursor = base.cursor()
+cursor.execute('''
+	CREATE TABLE IF NOT EXISTS PLAYERS (
+			   id INTEGER PRIMARY KEY,
+			   casado TEXT DEFAULT 'Con nadie:(',
+			   dinero INTEGER DEFAULT 0,
+			   dinero_banco INTEGER DEFAULT 0,
+			   rool TEXT DEFAULT 'Vagabundo'		   
+	)
+''')
+base.commit()
+base.close()
 
 load_dotenv()
 
-yotube= os.getenv("clave")
-
 Token = os.getenv("DISCORD_TOKEN")
 
-bot = commands.Bot(command_prefix="!")
+class Cliente(discord.Client):
+	async def on_ready(self):
+		print(f'Conectado como {self.user}')
 
+	async def on_message(self, message):
+		if self.jugador_existe(message.author.id) is None:
+			self.agregar_jugador(message.author.id)
+		print(message.author, message.content)
 
-#------------------------------reproduccion-----------------------
+		if message.content.lower() == 'io':
+			datos_jugador = self.datos_jugador(message.author.id)
+			await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {datos_jugador[2]}\n dinero en el banco {datos_jugador[3]}')
+			
+		if message.content.lower() == 'casar':
+			await message.channel.send('Con quien quieres casarte?')
+			try:
+				casado = await self.wait_for('message', check=lambda m: m.author == message.author, timeout=30)
+				if self.jugador_existe(casado.author.id) is None:
+					self.agregar_jugador(casado.author.id)
+				base = sqlite3.connect('zanma.db')
+				cursor = base.cursor()
+				id_usuario = re.sub(r'\D', '', casado.content)
+				nombre_display = await self.obtener_display_name(message.guild.id, int(id_usuario))
+				cursor.execute(f'UPDATE PLAYERS SET casado = "{nombre_display}" WHERE id = {message.author.id}')
+				cursor.execute('UPDATE PLAYERS SET casado = ? WHERE id = ?', (message.author.display_name, id_usuario))
+				base.commit()
+				base.close()
+				await message.channel.send(f'{message.author.mention} se ha casado con {nombre_display}')
+			except asyncio.TimeoutError:
+				await message.channel.send('Te tardaste mucho, intentalo de nuevo')
+	
+	def jugador_existe(self, id):
+		base = sqlite3.connect('zanma.db')
+		cursor = base.cursor()
+		cursor.execute(f'SELECT * FROM PLAYERS WHERE id = {id}')
+		jugador = cursor.fetchone()
+		base.close()
+		return jugador
+	
+	def agregar_jugador(self, id):
+		base = sqlite3.connect('zanma.db')
+		cursor = base.cursor()
+		cursor.execute(f'INSERT INTO PLAYERS (id) VALUES ({id})')
+		base.commit()
+		base.close()
+	
+	def datos_jugador(self, id):
+		base = sqlite3.connect('zanma.db')
+		cursor = base.cursor()
+		cursor.execute(f'SELECT * FROM PLAYERS WHERE id = {id}')
+		jugador = cursor.fetchone()
+		base.close()
+		return jugador
+	
+	async def obtener_display_name(self, guild_id, user_id):
+		guild = self.get_guild(guild_id)
+		if guild is not None:
+			member = guild.get_member(user_id)
+			if member is not None:
+				return member.display_name
+		return None
 
-@bot.command(pass_context=True)
-
-async def play(ctx):
-
-	if (ctx.author.voice):
-
-	    channel=ctx.message.author.voice.channel
-
-	    voice = await channel.connect()
-
-	    source = FFmpegPCMAudio("stay.mp3")
-	    musiclist1= FFmpegPCMAudio("Stressed Out.mp3")
-	    contador=1
-	    if contador==1:
-	        player = voice.play(source)
-	        contador-1
-	    else:
-	        player = voice.play(musiclist1)
-	        contador+1
-
-	else:
-
-		await ctx.send("no estas en un chat de voz")
-
-#--------------------------------------------preguntas------------------------------------------------------------------
-
-@bot.command()
-
-async def dios(ctx, existe):
-
-	await ctx.send("claro que dios existe, no te puedo decir el porque pero confia en mi soy un bot y se todo")
-
-@bot.command(pass_context=False)
-
-#----------------------------------------------	Salir del chat de voz---------------------------------------------------
-
-async def salir(ctx):
-
-	if (ctx.voice_client):
-
-		await ctx.guild.voice_client.disconnect()
-
-		await ctx.send("me voy")
-
-	else:
-
-		await ctx.send("no estoy en el chat de voz")
-
-#----------------------------------informacion del servidor-------------------------------------------------
-
-@bot.command()
-
-async def informacion(ctx):
-
-	embed=discord.Embed(title=f"{ctx.guild.name}",description = "nigga",timestamp = datetime.datetime.utcnow(), color = discord.Color.blue())
-
-	embed.add_field(name="servidor creado a", value=f"{ctx.guild.created_at}")
-
-	embed.add_field(name='propietario del servidor', value=f"{ctx.guild.owner}")
-
-	embed.add_field(name='region del servidor', value=f"{ctx.guild.region}")
-
-	embed.add_field(name="id del servidor", value=f"{ctx.guild.id}")
-
-	embed.set_thumbnail(url="https://logos-marcas.com/wp-content/uploads/2020/04/Movistar-Logo.png")
-
-	await ctx.send(embed=embed)
-
-#--------------------------------creador del bot-----------------------------------
-@bot.command(name="creador")
-
-async def creador(ctx):
-
-	response = "creador de todo el universo Angel24"
-
-	await ctx.send(response)
-
-bot.run(Token)
+intentos = discord.Intents.default()
+intentos.message_content = True
+client = Cliente(intents=intentos)
+client.run(Token)
