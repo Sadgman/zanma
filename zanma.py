@@ -1,4 +1,3 @@
-import asyncio
 from modulos import *
 
 base = sqlite3.connect('zanma.db')
@@ -9,7 +8,9 @@ cursor.execute('''
 			   casado TEXT DEFAULT 'Con nadie:(',
 			   dinero INTEGER DEFAULT 0,
 			   dinero_banco INTEGER DEFAULT 0,
-			   rool TEXT DEFAULT 'Vagabundo'		   
+			   rool TEXT DEFAULT 'Vagabundo',
+			   nivel INTEGER DEFAULT 0,
+			   Bot_waintegracion INTEGER DEFAULT 0   
 	)
 ''')
 base.commit()
@@ -30,7 +31,23 @@ class Cliente(discord.Client):
 
 		if message.content.lower() == 'io':
 			datos_jugador = self.datos_jugador(message.author.id)
-			await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {datos_jugador[2]}\n dinero en el banco {datos_jugador[3]}')
+			if datos_jugador[6] == 0:
+				await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {datos_jugador[2]}\n dinero en el banco {datos_jugador[3]}')
+			else:
+				await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {self.obtener_dato_Wajugador(str(datos_jugador[6]))['dinero']}\n dinero en el banco {datos_jugador[3]}\n Nivel: {datos_jugador[5]}')
+
+		if message.content.lower() == 'integrar wa':
+			await message.channel.send('Digita tu número de telefono de Whatsapp sin guiones')
+			try:
+				numero = await self.wait_for('message', check=lambda m: m.author == message.author, timeout=30)
+				base = sqlite3.connect('zanma.db')
+				cursor = base.cursor()
+				cursor.execute(f'UPDATE PLAYERS SET Bot_waintegracion = {numero.content} WHERE id = {message.author.id}')
+				base.commit()
+				base.close()
+				await message.channel.send('Se ha integrado correctamente tu número de Whatsapp')
+			except asyncio.TimeoutError:
+				await message.channel.send('Te tardaste mucho, intentalo de nuevo')
 			
 		if message.content.lower() == 'casar':
 			await message.channel.send('Con quien quieres casarte?')
@@ -38,6 +55,7 @@ class Cliente(discord.Client):
 				casado = await self.wait_for('message', check=lambda m: m.author == message.author, timeout=30)
 				if self.jugador_existe(casado.author.id) is None:
 					self.agregar_jugador(casado.author.id)
+					
 				base = sqlite3.connect('zanma.db')
 				cursor = base.cursor()
 				id_usuario = re.sub(r'\D', '', casado.content)
@@ -80,6 +98,17 @@ class Cliente(discord.Client):
 			if member is not None:
 				return member.display_name
 		return None
+	
+	def obtener_dato_Wajugador(self, id:str):
+		l = os.path.dirname(os.path.realpath(__file__))
+		l = l.replace('zanma', 'bot-whatsapp.js')
+		r = os.path.join(l, 'data.json')
+		
+		with open(r , 'r') as file:
+			data = json.load(file)
+		for player in data['players']: 
+			if player['id'] == id:
+				return player
 
 intentos = discord.Intents.default()
 intentos.message_content = True
