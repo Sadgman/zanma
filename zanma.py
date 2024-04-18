@@ -34,7 +34,7 @@ class Cliente(discord.Client):
 			if datos_jugador[6] == 0:
 				await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {datos_jugador[2]}\n dinero en el banco {datos_jugador[3]}')
 			else:
-				await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {self.obtener_dato_Wajugador(str(datos_jugador[6]))['dinero']}\n dinero en el banco {datos_jugador[3]}\n Nivel: {datos_jugador[5]}')
+				await message.channel.send(f'Hola {message.author.mention}\n casado con: {datos_jugador[1]}\n dinero: {self.obtener_dato_Wajugador(str(datos_jugador[6]))['dinero']}\n dinero en el banco: {self.obtener_dato_Wajugador(str(datos_jugador[6]))['banco']}\n Nivel: {self.obtener_dato_Wajugador(str(datos_jugador[6]))['nivel']}\n Rool: {self.obtener_dato_Wajugador(str(datos_jugador[6]))['roles']}')
 
 		if message.content.lower() == 'integrar wa':
 			await message.channel.send('Digita tu número de telefono de Whatsapp sin guiones')
