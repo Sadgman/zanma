@@ -1,0 +1,7 @@
+discord.py
+sqlite3
+pytube
+json
+dotenv
+asyncio
+re
