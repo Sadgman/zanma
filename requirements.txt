@@ -4,3 +4,4 @@ json
 dotenv
 asyncio
 re
+python-dotenv
